@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
+from os import replace
 import sys
 from models.base_model import BaseModel
 from models.__init__ import storage
@@ -126,9 +127,14 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
         for i in argv[1:]:
             key, val = i.split('=')
+            val = val.replace('_', ' ')
+            for n in val:
+                if n == '.':
+                    float(val)
+                break;
             setattr(new_instance, key, eval(val))
-        print(new_instance.id)
         new_instance.save()
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
