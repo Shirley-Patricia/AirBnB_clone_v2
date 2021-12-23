@@ -25,7 +25,7 @@ class DBStorage():
     def __init__(self):
         ''' initializate the engine '''
         self.__engine = create_engine(
-            'mysql+mysqldb://USR:PWD@HST/DB', pool_pre_ping=True)
+            'mysql+mysqldb://{}:{}@{}/{}'.format(USR, PWD, HST, DB), pool_pre_ping=True)
         if ENV == 'test':
             metadata = MetaData(self.__engine)
             metadata.reflect()
