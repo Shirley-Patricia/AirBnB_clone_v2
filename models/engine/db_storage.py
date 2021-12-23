@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-''' ghjklerthedh '''
+'''
+    creating a new engine
+    and link it with the db
+'''
 import os
 from models.base_model import Base
 from sqlalchemy import create_engine
@@ -22,12 +25,12 @@ ENV = os.getenv('HBNB_ENV')
 
 
 class DBStorage():
-    ''' asdfghj '''
+    ''' making the methods and sessions '''
     __engine = None
     __session = None
 
     def __init__(self):
-        ''' regyhfsd '''
+        ''' initializate the engine '''
         self.__engine = create_engine(
             'mysql+mysqldb://USR:PWD@HST/DB', pool_pre_ping=True)
         if ENV == 'test':
@@ -42,7 +45,7 @@ class DBStorage():
             'User': User, 'Place': Place,
             'State': State, 'City': City, 'Amenity': Amenity,
             'Review': Review
-            }
+        }
         if cls is not None:
             data = self.__session.query(classes[cls]).all()
             for dbs in data:
@@ -56,11 +59,14 @@ class DBStorage():
         return dictio
 
     def new(self, obj):
-        ''' rhgjgfd '''
+        ''' add the obj to the current DB '''
         self.__session.add(obj)
 
     def save(self):
-        ''' ghjhgf '''
+        '''
+            commit all changes of the
+            current database session
+        '''
         self.__session.commit()
 
     def reload(self):
@@ -73,5 +79,9 @@ class DBStorage():
         self.__session = Session()
 
     def delete(self, obj=None):
-        ''' fsdyajksf '''
-        self.__session.delete(obj)
+        '''
+            delete from the current database
+            session obj if not None
+        '''
+        if obj is not None:
+            self.__session.delete(obj)
