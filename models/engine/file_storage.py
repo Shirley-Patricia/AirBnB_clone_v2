@@ -64,4 +64,3 @@ class FileStorage:
         if key in FileStorage.__objects:
             del FileStorage.__objects[key]
             storage.save()
-        return
