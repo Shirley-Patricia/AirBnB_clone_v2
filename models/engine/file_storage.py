@@ -12,8 +12,8 @@ class FileStorage:
         """Returns a dictionary of models currently in storage"""
         all_lst = {}
         if cls is None:
-            return self.__objects
-        for k, v in self.__objects.items():
+            return FileStorage.__objects
+        for k, v in FileStorage.__objects.items():
             if cls == v.__class__:
                 all_lst[k] = v
         return all_lst
@@ -62,3 +62,4 @@ class FileStorage:
         key = "{}.{}".format(type(obj).__name__, obj.id)
         if key in FileStorage.__objects:
             del FileStorage.__objects[key]
+        return
