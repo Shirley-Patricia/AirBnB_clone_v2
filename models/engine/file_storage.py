@@ -59,8 +59,9 @@ class FileStorage:
         """delete the obj passed as argument"""
         from models import storage
         if obj == None:
-            return
+            return 0
         key = "{}.{}".format(type(obj).__name__, obj.id)
         if key in FileStorage.__objects:
             del FileStorage.__objects[key]
             storage.save()
+            storage.reload()
