@@ -60,6 +60,6 @@ class FileStorage:
         if obj is None:
             return
         key = "{}.{}".format(type(obj).__name__, obj.id)
-        if key in FileStorage.__objects:
-            del FileStorage.__objects[key]
-        return
+        if key not in FileStorage.__objects:
+            return
+        del FileStorage.__objects[key]
