@@ -59,7 +59,6 @@ class FileStorage:
         """delete the obj passed as argument"""
         if obj is None:
             return
-        else:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            if key in FileStorage.__objects:
-                del FileStorage.__objects[key]
+        key = "{}.{}".format(type(obj).__name__, obj.id)
+        if key in FileStorage.__objects:
+            del FileStorage.__objects[key]
