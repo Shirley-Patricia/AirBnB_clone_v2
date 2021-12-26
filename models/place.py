@@ -4,7 +4,6 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from models import storage
-from models.amenity import Amenity
 from models.review import Review
 
 class Place(BaseModel, Base):
@@ -27,8 +26,8 @@ class Place(BaseModel, Base):
 
     @property
     def reviews(self):
-        """ returns the list of City instances with state_id
-            equals to the current State.id
+        """Returns the list of Review instances with
+           place_id equals to the current Place.id
         """
         list_reviews = storage.all(Review)
         reviews = []
@@ -36,11 +35,3 @@ class Place(BaseModel, Base):
             if value.place_id == self.id:
                 reviews.append(value)
         return reviews
-
-    metadata = Base.metadata
-    place_amenity = Table('place_amenity', metadata,
-                    Column('place_id', String(60), ForeignKey('place.id'), primary_key=True),
-                    Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True)
-                    )
-    amenities = relationship(
-        'Amenity', secondary=place_amenity, viewonly=False, passive_deletes=True, cascade="all, delete")
