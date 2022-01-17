@@ -10,16 +10,16 @@ from fabric.operations import run, put, sudo
 from fabric.context_managers import cd
 import time
 env.user = 'ubuntu'
-env.hosts = ['34.138.198.203 web-01', '100.25.219.41 web-02']
+env.hosts = ['34.138.198.203', '100.25.219.41']
 
 
 def do_deploy(archive_path):
     """To distribute an archive to web servers
        Returns False if the file at the path archive_path doesn’t exist
     """
+    if not os.path.isfile(archive_path):
+        return False
     try:
-        if not os.path.isfile(archive_path):
-            return False
         """Upload the archive to the /tmp/ directory of the web server"""
         put(archive_path, "/tmp/")
         unpack = archive_path.split("/")[-1]
