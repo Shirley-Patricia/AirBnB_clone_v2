@@ -23,7 +23,7 @@ def do_pack():
         of the files being added to the archive on the terminal.
     """
     local("mkdir -p versions")
-    local("tar -czvf versions/web_static_{}.tgz web_static/".format(date))
+    local("tar -cvzf versions/web_static_{}.tgz web_static/".format(date))
     pathf = "versions/web_static_{}.tgz".format(date)
     if os.path.exists(pathf) and os.path.getsize(pathf) > 0:
         return (pathf)
@@ -36,35 +36,35 @@ def do_deploy(archive_path):
     """
     if not os.path.isfile(archive_path):
         return False
-    try:
-        """Upload the archive to the /tmp/ directory of the web server"""
-        put(archive_path, "/tmp/")
-        unpack = archive_path.split("/")[-1]
-        folder = ("/data/web_static/releases/" + unpack.split(".")[0])
-        run("mkdir -p {}/".format(folder))
+    
+    """Upload the archive to the /tmp/ directory of the web server"""
+    put(archive_path, "/tmp/")
+    unpack = archive_path.split("/")[-1]
+    arch_path = "/data/web_static/releases/"
+    ext = unpack.split(".")[0]
+    folder = (arch_path + ext)
+    run("mkdir -p {}/".format(folder))
 
-        """Uncompress the archive to the folder
-        /data/web_static/releases/<archive filename without extension>
-        on the web server"""
-        run("tar -xzf /tmp/{} -C {}/".format(unpack, folder))
+    """Uncompress the archive to the folder
+    /data/web_static/releases/<archive filename without extension>
+    on the web server"""
+    run("tar -xzf /tmp/{} -C {}/".format(unpack, folder))
 
-        """Delete the archive from the web server"""
-        run("rm /tmp/{}".format(unpack))
-        run("mv {}/web_static/* {}/".format(folder, folder))
-        run("rm -rf {}/web_static")
+    """Delete the archive from the web server"""
+    run("rm /tmp/{}".format(unpack))
+    run("mv {}/web_static/* {}/".format(folder, folder))
+    run("rm -rf {}/web_static".format(folder))
 
-        """Delete the symbolic link /data/web_static/current
-           from the web server"""
-        run("rm -rf /data/web_static/current")
-        """Create a new the symbolic link /data/web_static/current on the
-           web server, linked to the new version of your code
-           (/data/web_static/releases/<archive filename without extension>)
-        """
-        run("ln -s {} /data/web_static/current".format(folder))
-        return True
-    except Exception as e:
-        return False
-
+    """Delete the symbolic link /data/web_static/current
+        from the web server"""
+    run("rm -rf /data/web_static/current")
+    """Create a new the symbolic link /data/web_static/current on the
+        web server, linked to the new version of your code
+        (/data/web_static/releases/<archive filename without extension>)
+    """
+    run("ln -s {} /data/web_static/current".format(folder))
+    return True
+    
 
 def deploy():
     archive_path = do_pack()
