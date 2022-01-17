@@ -62,7 +62,7 @@ def do_deploy(archive_path):
         """
         run("ln -s {} /data/web_static/current".format(folder))
         return True
-    except:
+    except Exception as e:
         return False
 
 
