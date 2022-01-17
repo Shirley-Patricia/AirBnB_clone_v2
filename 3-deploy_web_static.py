@@ -11,23 +11,24 @@ import time
 env.user = 'ubuntu'
 env.hosts = ['34.138.198.203', '100.25.219.41']
 
+
 def do_pack():
     """It generate a tgz archive"""
     date = time.strftime("%Y%m%d%H%M%S")
-    try:
-        """-c - instructs tar to create a new archive.
-           -z - sets the compression method to gzip.
-           -f archive-name.tgz - specifies the archive name.
-           -v option to make the tar command more visible and print the names
-           of the files being added to the archive on the terminal.
-        """
-        local("mkdir -p versions")
-        local("tar -czvf versions/web_static_{}.tgz web_static/".format(date))
-        pathf = "versions/web_static_{}.tgz".format(date)
-        if os.path.exist(pathf) and os.path.getsize(pathf) > 0:
-            return (pathf)
-    except:
-        return None
+
+    """-c - instructs tar to create a new archive.
+        -z - sets the compression method to gzip.
+        -f archive-name.tgz - specifies the archive name.
+        -v option to make the tar command more visible and print the names
+        of the files being added to the archive on the terminal.
+    """
+    local("mkdir -p versions")
+    local("tar -czvf versions/web_static_{}.tgz web_static/".format(date))
+    pathf = "versions/web_static_{}.tgz".format(date)
+    if os.path.exists(pathf) and os.path.getsize(pathf) > 0:
+        return (pathf)
+    return None
+
 
 def do_deploy(archive_path):
     """To distribute an archive to web servers
@@ -66,7 +67,8 @@ def do_deploy(archive_path):
 
 
 def deploy():
-    archive_created = do_pack()
-    if archive_created is None:
-        return False
-    return (do_deploy(archive_created))
+    archive_path = do_pack()
+    if archive_path:
+        archive_created = do_deploy(archive_path)
+        return archive_created
+    return False
