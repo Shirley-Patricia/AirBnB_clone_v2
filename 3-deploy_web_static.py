@@ -34,26 +34,25 @@ def do_deploy(archive_path):
     """To distribute an archive to web servers
        Returns False if the file at the path archive_path doesn’t exist
     """
-    if not os.path.isfile(archive_path):
+    if not os.path.exists(archive_path):
         return False
-    
+
     """Upload the archive to the /tmp/ directory of the web server"""
-    put(archive_path, "/tmp/")
     unpack = archive_path.split("/")[-1]
     arch_path = "/data/web_static/releases/"
     ext = unpack.split(".")[0]
-    folder = (arch_path + ext)
-    run("mkdir -p {}/".format(folder))
+    put(archive_path, "/tmp/")
+    run("mkdir -p {}{}/".format(arch_path, ext))
 
     """Uncompress the archive to the folder
     /data/web_static/releases/<archive filename without extension>
     on the web server"""
-    run("tar -xzf /tmp/{} -C {}/".format(unpack, folder))
+    run("tar -xzf /tmp/{} -C {}{}/".format(unpack, arch_path, ext))
 
     """Delete the archive from the web server"""
     run("rm /tmp/{}".format(unpack))
-    run("mv {}/web_static/* {}/".format(folder, folder))
-    run("rm -rf {}/web_static".format(folder))
+    run("mv {0}{1}/web_static/* {0}{1}/".format(arch_path, ext))
+    run("rm -rf {}{}/web_static".format(arch_path, ext))
 
     """Delete the symbolic link /data/web_static/current
         from the web server"""
@@ -62,9 +61,9 @@ def do_deploy(archive_path):
         web server, linked to the new version of your code
         (/data/web_static/releases/<archive filename without extension>)
     """
-    run("ln -s {} /data/web_static/current".format(folder))
+    run("ln -s {}{}/ /data/web_static/current".format(arch_path, ext))
     return True
-    
+
 
 def deploy():
     archive_path = do_pack()
