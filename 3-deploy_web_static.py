@@ -23,7 +23,9 @@ def do_pack():
         """
         local("mkdir -p versions")
         local("tar -czvf versions/web_static_{}.tgz web_static/".format(date))
-        return ("versions/web_static_{}.tgz web_static/".format(date))
+        pathf = "versions/web_static_{}.tgz".format(date)
+        if os.path.exist(pathf) and os.path.getsize(pathf) > 0:
+            return (pathf)
     except:
         return None
 
@@ -64,8 +66,7 @@ def do_deploy(archive_path):
 
 
 def deploy():
-	try:
-		archive_created=do_pack()
-		return (do_deploy(archive_created))
-	except:
-		return False
+    archive_created = do_pack()
+    if archive_created is None:
+        return False
+    return (do_deploy(archive_created))
