@@ -20,9 +20,9 @@ def hbnb():
 def c_isfun(text):
     return "C %s" % escape(text.replace('_', " "))
 
-
+@app.route('/python', defaults={'text': 'is cool'}, strict_slashes=False)
 @app.route('/python/<string:text>', strict_slashes=False)
-def pyth(text='is_cool'):
+def pyth(text):
     return "Python %s" % escape(text.replace('_', " "))
 
 
